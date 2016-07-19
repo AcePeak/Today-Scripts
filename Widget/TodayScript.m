@@ -273,10 +273,12 @@ NSCharacterSet *lineBreaks;
     NSMutableArray *array;
 }
 
+static TodayScriptArray *instance = nil;
 + (TodayScriptArray *)sharedScripts
 {
-    static TodayScriptArray *instance = nil;
-    if (! instance) instance = [[TodayScriptArray alloc] init];
+    if (! instance) {
+        instance = [[TodayScriptArray alloc] init];
+    }
     return instance;
 }
 
@@ -362,28 +364,47 @@ NSCharacterSet *lineBreaks;
     lineBreaks = [NSCharacterSet characterSetWithCharactersInString:@"\n\r"];
 
 
-
     // Set up the "true" backing array for our live scripts list.
-    array = [[NSMutableArray alloc] init];
+    array = [TodayScriptArray getDefaultScripts];
+    return self;
+}
 
-//    [NSUserDefaults.standardUserDefaults removeObjectForKey:@"Scripts"];
++(NSUserDefaults*)getUserDefaults
+{
+    static NSUserDefaults *instance = nil;
+    if (! instance) {
+        //instance = [[NSUserDefaults alloc] initWithSuiteName:@"org.samroth.Today-Scripts.WidgetXXX"];
+        instance = [NSUserDefaults standardUserDefaults];
+    }
+    return instance;
+}
 
++(NSMutableArray*)getDefaultScripts
+{
+    NSMutableArray* retArr = [[NSMutableArray alloc] init];
+    
     // Get the list of scripts as stored in our defaults.
-    NSArray *defaultsScripts = [NSUserDefaults.standardUserDefaults arrayForKey:@"Scripts"];
-
+//    NSArray *defaultsScripts = [[TodayScriptArray getUserDefaults] arrayForKey:@"Scripts"];
+    
+    //Get from file manager.
+    NSLog(@"TodayS: load begins");
+    NSURL *containerURL = [NSURL fileURLWithPath:NSHomeDirectory()];
+    containerURL = [containerURL URLByAppendingPathComponent:@"TodayScripts.plist"];
+    NSArray *defaultsScripts = [NSArray arrayWithContentsOfURL:containerURL];
+    NSLog(@"TodayS: load %lu: %@",(unsigned long)defaultsScripts.count, containerURL.absoluteString);
+    
     // Iterate through the scripts to translate them to our live representation.
     for (id defaultsScript in defaultsScripts)
     {
         // If the script is not dictionary form, ignore it.
         if (! [defaultsScript isKindOfClass:NSDictionary.class])
             continue;
-
+        
         TodayScript *script = [[TodayScript alloc] init];
         script.dictionary = defaultsScript;
-        [array addObject:script];
+        [retArr addObject:script];
     }
-
-    return self;
+    return retArr;
 }
 
 - (NSUInteger)count {
@@ -404,8 +425,24 @@ NSCharacterSet *lineBreaks;
         [defaultsScripts addObject:script.dictionary];
 
     // Finally, write the array to our defaults.
-    [NSUserDefaults.standardUserDefaults setObject:defaultsScripts forKey:@"Scripts"];
+//    [[TodayScriptArray getUserDefaults] setObject:defaultsScripts forKey:@"Scripts"];
+//    [[TodayScriptArray getUserDefaults] synchronize];
+    
+    //Save to file manager
+    NSLog(@"TodayS: save begins");
+    
+    NSURL *containerURL = [NSURL fileURLWithPath:NSHomeDirectory()];
+    containerURL = [containerURL URLByAppendingPathComponent:@"TodayScripts.plist"];
+    BOOL success = [defaultsScripts writeToURL:containerURL atomically:YES];
+    NSLog(@"TodayS: save %@: %@", success?@"Success":@"Fail", containerURL.absoluteString);
+    if(!success)
+    {
+        NSError* err = nil;
+        success = [@"abc" writeToURL:containerURL atomically:YES encoding:NSUTF8StringEncoding error:&err];
+        NSLog(@"TodayS: save string %@: %@", success?@"Success":@"Fail", err);
+    }
 }
+
 - (void)insertObject:(id)anObject atIndex:(NSUInteger)index {
     [array insertObject:anObject atIndex:index];
     [self saveDefaults];

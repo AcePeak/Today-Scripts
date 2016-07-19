@@ -158,6 +158,26 @@
         [newScript run];
 }
 
+// Method invoked when user presses the "Add Script" button.
+- (IBAction)deleteScript:(id)sender
+{
+    // If we were given a script to work with, remove it from our form, make
+    // sure it it's stopped running, then update our defaults.
+    if (script)
+    {
+        [TodayScriptArray.sharedScripts removeObject:script];
+        [TodayScriptArray.sharedScripts saveDefaults];
+
+        [todayViewController.arrayController removeObject:script];
+        todayViewController.listViewController.contents =
+        todayViewController.arrayController.arrangedObjects;
+        
+    }
+    
+    // Hide ourselves.
+    [todayViewController dismissViewController:self];
+}
+
 - (void)cancelScript
 {
     script = nil;

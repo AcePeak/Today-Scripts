@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B17" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TodayViewController">
@@ -15,7 +16,7 @@
         <customView simulatedAppContext="notificationCenter" translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY">
             <rect key="frame" x="0.0" y="0.0" width="320" height="288"/>
         </customView>
-        <viewController nibName="ListRowViewController" nibBundleIdentifier="org.samroth.Today-Scripts.Widget" id="vLu-t9-fwO" customClass="NCWidgetListViewController">
+        <viewController nibName="ListRowViewController" nibBundleIdentifier="org.samroth.Today-Scripts.Widget1" id="vLu-t9-fwO" customClass="NCWidgetListViewController">
             <connections>
                 <outlet property="delegate" destination="-2" id="yeU-qg-EhZ"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="nq9-gf-VjV"/>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[TodayScriptArray saveDefaults]:TodayScript.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "NSUserDefaults.standardUserDefaults">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
